@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": ["mcp__memracer__*"]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${MEMRACER_HUMAN_KIT_DIR:-$CLAUDE_PROJECT_DIR/human-kit}/hooks/sessionstart-status.sh\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

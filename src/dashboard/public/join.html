@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08090c">
+  <title>memracer — join</title>
+  <link rel="stylesheet" href="/dashboard/styles.css">
+</head>
+<body>
+  <div class="gate">
+    <div class="gate-box">
+      <div class="gate-title">memracer<span class="cursor">&#9646;</span></div>
+      <div id="join-loading" class="gate-hint">loading invitation…</div>
+      <div id="join-invalid" class="gate-error hidden" role="alert">
+        this invitation is invalid, expired, or already used.
+        <div class="gate-hint" style="margin-top:var(--sp-5)"><a class="linkish" href="/signin">go to sign in</a></div>
+      </div>
+      <div id="join-main" class="hidden">
+        <div id="join-hi" class="gate-hint"></div>
+        <div id="join-sub" class="gate-hint"></div>
+        <div id="join-email" class="hidden">
+          <p class="gate-hint">A single-use link was sent to the invited email. Check that inbox to continue.</p>
+          <button id="send-link-btn" type="button">send the link again</button>
+        </div>
+        <div id="join-accept" class="hidden">
+          <button id="accept-btn" type="button">accept invitation &amp; join</button>
+        </div>
+        <div id="join-wrong-account" class="hidden">
+          <div id="join-wrong-msg" class="gate-error" role="alert"></div>
+          <button id="signout-btn" type="button">sign out and use this link</button>
+        </div>
+        <div id="link-sent" class="gate-hint hidden" role="status">check your email for the new link</div>
+        <div id="error" class="gate-error hidden" role="alert"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+  (() => {
+    "use strict";
+    const $ = (id) => document.getElementById(id);
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token") || "";
+    const auto = params.get("auto") === "1";
+    const show = (id) => $(id).classList.remove("hidden");
+    const hide = (id) => $(id).classList.add("hidden");
+    const err = (message) => {
+      const node = $("error");
+      node.textContent = message;
+      node.classList.toggle("hidden", !message);
+    };
+    function invalid() {
+      hide("join-loading");
+      hide("join-main");
+      show("join-invalid");
+    }
+    async function currentSession() {
+      try {
+        const response = await fetch("/api/session", { credentials: "same-origin" });
+        return response.ok ? await response.json() : null;
+      } catch {
+        return null;
+      }
+    }
+    async function accept() {
+      const button = $("accept-btn");
+      button.disabled = true;
+      err("");
+      const response = await fetch(`/api/invite/${encodeURIComponent(token)}/accept`, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      });
+      if (!response.ok) {
+        if (response.status === 404 || response.status === 410) return invalid();
+        const body = await response.json().catch(() => ({}));
+        err(body.error || `could not join (${response.status})`);
+        button.disabled = false;
+        return;
+      }
+      location.href = "/";
+    }
+    async function sendLink() {
+      const button = $("send-link-btn");
+      button.disabled = true;
+      err("");
+      const callbackURL = new URL(`/join?token=${encodeURIComponent(token)}&auto=1`, location.origin).toString();
+      const response = await fetch("/api/auth/sign-in/magic-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ email: window.invitedEmail, callbackURL, newUserCallbackURL: callbackURL }),
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        err(body.message || body.error || `could not send link (${response.status})`);
+        button.disabled = false;
+        return;
+      }
+      hide("join-email");
+      show("link-sent");
+    }
+    async function load() {
+      if (!token) return invalid();
+      let info;
+      try {
+        const response = await fetch(`/api/invite/${encodeURIComponent(token)}`, { credentials: "same-origin" });
+        if (!response.ok) return invalid();
+        info = await response.json();
+      } catch {
+        return invalid();
+      }
+      window.invitedEmail = info.email;
+      const session = await currentSession();
+      hide("join-loading");
+      show("join-main");
+      $("join-hi").textContent = `you've been invited to ${info.project.name} as ${info.email}`;
+      const invited = String(info.email || "").toLowerCase();
+      const signedIn = session && session.email ? String(session.email).toLowerCase() : "";
+      if (session && signedIn === invited) {
+        $("join-sub").textContent = `you're signed in as ${info.email} — accept to join as ${info.role}`;
+        show("join-accept");
+        $("accept-btn").textContent = `accept invitation & join ${info.project.name}`;
+        if (auto) return void accept();
+        return;
+      }
+      if (session) {
+        $("join-wrong-msg").textContent = `you're signed in as ${session.email || session.name || "another account"}, but this invitation is for ${info.email}.`;
+        show("join-wrong-account");
+        return;
+      }
+      $("join-sub").textContent = `use the link sent to ${info.email} to join as ${info.role}`;
+      show("join-email");
+    }
+    $("accept-btn").addEventListener("click", accept);
+    $("send-link-btn").addEventListener("click", sendLink);
+    $("signout-btn").addEventListener("click", async () => {
+      $("signout-btn").disabled = true;
+      await fetch("/api/auth/sign-out", { method: "POST", credentials: "same-origin" }).catch(() => undefined);
+      location.href = `/join?token=${encodeURIComponent(token)}`;
+    });
+    load();
+  })();
+  </script>
+</body>
+</html>

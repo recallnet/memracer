@@ -1,0 +1,602 @@
+[
+  {
+    "id": "historical-001",
+    "category": "happy",
+    "seedFixture": "accept-rate-limit-headers",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-002",
+    "category": "happy",
+    "seedFixture": "accept-flaky-websocket-test",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-003",
+    "category": "happy",
+    "seedFixture": "accept-oauth-refresh-clock-skew",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-004",
+    "category": "happy",
+    "seedFixture": "accept-migration-orders-index",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-005",
+    "category": "happy",
+    "seedFixture": "accept-docs-webhook-signing",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-006",
+    "category": "happy",
+    "seedFixture": "accept-perf-cold-start",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-007",
+    "category": "happy",
+    "seedFixture": "accept-csv-export-encoding",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-008",
+    "category": "happy",
+    "seedFixture": "accept-stripe-webhook-retry-dedupe",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-009",
+    "category": "happy",
+    "seedFixture": "accept-search-pagination-cursor",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-010",
+    "category": "happy",
+    "seedFixture": "accept-npm-audit-lodash",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-011",
+    "category": "happy",
+    "seedFixture": "accept-timezone-digest-emails",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-012",
+    "category": "happy",
+    "seedFixture": "accept-graceful-shutdown-drain",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-013",
+    "category": "happy",
+    "seedFixture": "accept-audit-log-retention",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-014",
+    "category": "happy",
+    "seedFixture": "accept-mobile-push-badge-count",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-015",
+    "category": "happy",
+    "seedFixture": "accept-rate-limit-headers",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-016",
+    "category": "happy",
+    "seedFixture": "accept-flaky-websocket-test",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-017",
+    "category": "happy",
+    "seedFixture": "accept-oauth-refresh-clock-skew",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-018",
+    "category": "happy",
+    "seedFixture": "accept-migration-orders-index",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-019",
+    "category": "happy",
+    "seedFixture": "accept-docs-webhook-signing",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-020",
+    "category": "happy",
+    "seedFixture": "accept-perf-cold-start",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-021",
+    "category": "happy",
+    "seedFixture": "accept-csv-export-encoding",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-022",
+    "category": "happy",
+    "seedFixture": "accept-stripe-webhook-retry-dedupe",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-023",
+    "category": "happy",
+    "seedFixture": "accept-search-pagination-cursor",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-024",
+    "category": "happy",
+    "seedFixture": "accept-npm-audit-lodash",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-025",
+    "category": "happy",
+    "seedFixture": "accept-timezone-digest-emails",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-026",
+    "category": "happy",
+    "seedFixture": "accept-graceful-shutdown-drain",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-027",
+    "category": "happy",
+    "seedFixture": "accept-audit-log-retention",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-028",
+    "category": "happy",
+    "seedFixture": "accept-mobile-push-badge-count",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-029",
+    "category": "happy",
+    "seedFixture": "accept-rate-limit-headers",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-030",
+    "category": "happy",
+    "seedFixture": "accept-flaky-websocket-test",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-031",
+    "category": "happy",
+    "seedFixture": "accept-oauth-refresh-clock-skew",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-032",
+    "category": "happy",
+    "seedFixture": "accept-migration-orders-index",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-033",
+    "category": "happy",
+    "seedFixture": "accept-docs-webhook-signing",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-034",
+    "category": "happy",
+    "seedFixture": "accept-perf-cold-start",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-035",
+    "category": "happy",
+    "seedFixture": "accept-csv-export-encoding",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-036",
+    "category": "happy",
+    "seedFixture": "accept-stripe-webhook-retry-dedupe",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-037",
+    "category": "happy",
+    "seedFixture": "accept-search-pagination-cursor",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-038",
+    "category": "happy",
+    "seedFixture": "accept-npm-audit-lodash",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-039",
+    "category": "happy",
+    "seedFixture": "accept-timezone-digest-emails",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-040",
+    "category": "happy",
+    "seedFixture": "accept-graceful-shutdown-drain",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-041",
+    "category": "happy",
+    "seedFixture": "accept-audit-log-retention",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-042",
+    "category": "happy",
+    "seedFixture": "accept-mobile-push-badge-count",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-043",
+    "category": "happy",
+    "seedFixture": "accept-rate-limit-headers",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-044",
+    "category": "happy",
+    "seedFixture": "accept-flaky-websocket-test",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-045",
+    "category": "happy",
+    "seedFixture": "accept-oauth-refresh-clock-skew",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-046",
+    "category": "happy",
+    "seedFixture": "accept-migration-orders-index",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-047",
+    "category": "happy",
+    "seedFixture": "accept-docs-webhook-signing",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-048",
+    "category": "happy",
+    "seedFixture": "accept-perf-cold-start",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-049",
+    "category": "happy",
+    "seedFixture": "accept-csv-export-encoding",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-050",
+    "category": "happy",
+    "seedFixture": "accept-stripe-webhook-retry-dedupe",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-051",
+    "category": "happy",
+    "seedFixture": "accept-search-pagination-cursor",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-052",
+    "category": "happy",
+    "seedFixture": "accept-npm-audit-lodash",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-053",
+    "category": "happy",
+    "seedFixture": "accept-timezone-digest-emails",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-054",
+    "category": "happy",
+    "seedFixture": "accept-graceful-shutdown-drain",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-055",
+    "category": "happy",
+    "seedFixture": "accept-audit-log-retention",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-056",
+    "category": "happy",
+    "seedFixture": "accept-mobile-push-badge-count",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-057",
+    "category": "happy",
+    "seedFixture": "accept-rate-limit-headers",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-058",
+    "category": "happy",
+    "seedFixture": "accept-flaky-websocket-test",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-059",
+    "category": "happy",
+    "seedFixture": "accept-oauth-refresh-clock-skew",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-060",
+    "category": "happy",
+    "seedFixture": "accept-migration-orders-index",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-061",
+    "category": "edge",
+    "seedFixture": "merge-rate-limit-paraphrase",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-062",
+    "category": "edge",
+    "seedFixture": "merge-upload-502-second-report",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-063",
+    "category": "edge",
+    "seedFixture": "merge-sessions-migration-subset",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-064",
+    "category": "edge",
+    "seedFixture": "merge-safari-checkout-same-bug",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-065",
+    "category": "edge",
+    "seedFixture": "merge-tls-cert-rotation-reminder",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-066",
+    "category": "edge",
+    "seedFixture": "merge-queue-wait-flake-different-words",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-067",
+    "category": "edge",
+    "seedFixture": "merge-oauth-loop-cookie-report",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-068",
+    "category": "edge",
+    "seedFixture": "merge-docker-image-slim-subset",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-069",
+    "category": "edge",
+    "seedFixture": "merge-tooltip-zindex-dup",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-070",
+    "category": "edge",
+    "seedFixture": "merge-rate-limit-paraphrase",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-071",
+    "category": "edge",
+    "seedFixture": "merge-upload-502-second-report",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-072",
+    "category": "edge",
+    "seedFixture": "merge-sessions-migration-subset",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-073",
+    "category": "edge",
+    "seedFixture": "merge-safari-checkout-same-bug",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-074",
+    "category": "edge",
+    "seedFixture": "merge-tls-cert-rotation-reminder",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-075",
+    "category": "edge",
+    "seedFixture": "merge-queue-wait-flake-different-words",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-076",
+    "category": "edge",
+    "seedFixture": "merge-oauth-loop-cookie-report",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-077",
+    "category": "edge",
+    "seedFixture": "merge-docker-image-slim-subset",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-078",
+    "category": "edge",
+    "seedFixture": "merge-tooltip-zindex-dup",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-079",
+    "category": "edge",
+    "seedFixture": "merge-rate-limit-paraphrase",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-080",
+    "category": "edge",
+    "seedFixture": "merge-upload-502-second-report",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-081",
+    "category": "clarify_refusal",
+    "seedFixture": "clarify-make-it-faster",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-082",
+    "category": "clarify_refusal",
+    "seedFixture": "clarify-thing-from-standup",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-083",
+    "category": "clarify_refusal",
+    "seedFixture": "clarify-users-complaining",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-084",
+    "category": "clarify_refusal",
+    "seedFixture": "clarify-redesign-no-scope",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-085",
+    "category": "clarify_refusal",
+    "seedFixture": "clarify-broken-for-customer",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-086",
+    "category": "clarify_refusal",
+    "seedFixture": "clarify-add-ai",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-087",
+    "category": "clarify_refusal",
+    "seedFixture": "clarify-cleanup-database",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-088",
+    "category": "clarify_refusal",
+    "seedFixture": "clarify-make-it-faster",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-089",
+    "category": "clarify_refusal",
+    "seedFixture": "clarify-thing-from-standup",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-090",
+    "category": "clarify_refusal",
+    "seedFixture": "clarify-users-complaining",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-091",
+    "category": "historical_failure",
+    "seedFixture": "merge-rate-limit-paraphrase",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-092",
+    "category": "historical_failure",
+    "seedFixture": "merge-queue-wait-flake-different-words",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-093",
+    "category": "historical_failure",
+    "seedFixture": "clarify-make-it-faster",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-094",
+    "category": "historical_failure",
+    "seedFixture": "clarify-redesign-no-scope",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-095",
+    "category": "historical_failure",
+    "seedFixture": "accept-flaky-websocket-test",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-096",
+    "category": "historical_failure",
+    "seedFixture": "merge-rate-limit-paraphrase",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-097",
+    "category": "historical_failure",
+    "seedFixture": "merge-queue-wait-flake-different-words",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-098",
+    "category": "historical_failure",
+    "seedFixture": "clarify-make-it-faster",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-099",
+    "category": "historical_failure",
+    "seedFixture": "clarify-redesign-no-scope",
+    "source": "historical_redacted"
+  },
+  {
+    "id": "historical-100",
+    "category": "historical_failure",
+    "seedFixture": "accept-flaky-websocket-test",
+    "source": "historical_redacted"
+  }
+]

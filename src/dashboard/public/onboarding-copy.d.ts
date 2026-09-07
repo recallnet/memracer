@@ -1,0 +1,17 @@
+export const FAQ_SECTIONS: ReadonlyArray<{ id: string; title: string; body: string }>;
+export const AIR_GAP_SUMMARY: string;
+export const TRUST_SUMMARY: string;
+export const TOKEN_SCOPE_NOTE: string;
+export const GET_STARTED_TITLE: string;
+export const GET_STARTED_BODY: string;
+export const GET_STARTED_STEPS: readonly string[];
+export const BILLING_GATE_TITLE: string;
+export const BILLING_GATE_BODY: string;
+export const BILLING_GATE_CTA: string;
+export const SEAT_EMPTY_BANNER: string;
+export const SEAT_PARTIAL_BANNER: string;
+export const HOW_THIS_WORKS_LABEL: string;
+export const HOW_THIS_WORKS_HREF: string;
+export const BYO_BAND_TITLE: string;
+export const BYO_BAND_BODY: string;
+export const INVITE_ROLE_HELP: string;

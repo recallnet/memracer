@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connect MCP client - memracer</title>
+  <link rel="stylesheet" href="/dashboard/styles.css">
+</head>
+<body>
+  <main class="gate">
+    <section class="gate-box oauth-consent" aria-labelledby="consent-title">
+      <div class="gate-title">memracer</div>
+      <h1 id="consent-title">Connect an MCP client</h1>
+      <p>Choose the single Project and named seat this client may use.</p>
+      <form id="consent-form">
+        <label>Project<select id="project" required></select></label>
+        <label>Role<select id="role" required><option value="coder">Coder</option><option value="human">Human</option></select></label>
+        <label>Seat name<input id="name" required maxlength="80" autocomplete="off" placeholder="Release laptop"></label>
+        <p id="error" class="gate-error" role="alert" hidden></p>
+        <div class="form-actions"><button type="submit">Connect</button><button type="button" id="deny" class="secondary">Deny</button></div>
+      </form>
+    </section>
+  </main>
+  <script type="module">
+    const params = new URLSearchParams(location.search);
+    const consentCode = params.get("consent_code") || "";
+    const form = document.querySelector("#consent-form");
+    const project = document.querySelector("#project");
+    const error = document.querySelector("#error");
+    const showError = (message) => { error.textContent = message; error.hidden = false; };
+    async function send(accept) {
+      const response = await fetch("/api/oauth/consent", {
+        method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ accept, consentCode, projectId: project.value, role: document.querySelector("#role").value, name: document.querySelector("#name").value }),
+      });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error || "Consent failed");
+      location.assign(body.redirectURI);
+    }
+    fetch(`/api/oauth/consent?consent_code=${encodeURIComponent(consentCode)}`, { credentials: "same-origin" })
+      .then(async (response) => { if (response.status === 401) { location.assign(`/signin?next=${encodeURIComponent(location.pathname + location.search)}`); return null; } if (!response.ok) throw new Error("Consent request is no longer valid"); return response.json(); })
+      .then((body) => { if (!body) return; for (const item of body.projects) project.add(new Option(item.name, item.id)); })
+      .catch((cause) => showError(cause.message));
+    form.addEventListener("submit", (event) => { event.preventDefault(); send(true).catch((cause) => showError(cause.message)); });
+    document.querySelector("#deny").addEventListener("click", () => send(false).catch((cause) => showError(cause.message)));
+  </script>
+</body>
+</html>

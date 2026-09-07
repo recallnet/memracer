@@ -1,0 +1,7 @@
+allowBuilds:
+  '@google/genai': false
+  '@prisma/client': false
+  better-sqlite3: true
+  core-js-pure: false
+  esbuild: true
+  protobufjs: false

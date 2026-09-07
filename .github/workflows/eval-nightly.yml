@@ -1,0 +1,56 @@
+name: eval-nightly
+
+# Tier-B stochastic mediator eval. SCHEDULE ONLY (plus manual dispatch) — never
+# on pull_request/push, so it never gates the merge queue. It runs the real
+# model over N trials, reports pass^k + a Wilson CI + LLM-judge dimension scores,
+# and uploads them as artifacts. Thresholds soft-gate (report-only) until the
+# judge is calibrated, and the run skips cleanly (exit 0) when the OpenRouter
+# secret is absent, so a fork or a secret-less environment stays green.
+on:
+  schedule:
+    - cron: "0 7 * * *" # 07:00 UTC nightly
+  workflow_dispatch:
+    inputs:
+      trials:
+        description: "Trials per scenario (N)"
+        required: false
+        default: "5"
+
+concurrency:
+  group: eval-nightly
+  cancel-in-progress: false
+
+jobs:
+  stochastic:
+    runs-on: macos-14
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile
+
+      - name: Run stochastic eval (Tier B)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p eval-artifacts
+          TRIALS="${{ github.event.inputs.trials || '5' }}"
+          # Single run (avoid double model cost / a second independent sample).
+          # The entry point self-skips (exit 0) with a clear log line when the
+          # key is absent, and soft-gates so a threshold breach never fails here.
+          # The JSON carries pass^k, the Wilson CI, and the judge dimension
+          # breakdown — the downloadable artifact a human inspects.
+          pnpm eval --stochastic --trials "$TRIALS" --json | tee eval-artifacts/stochastic.json
+
+      - name: Upload eval artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stochastic-eval-${{ github.run_id }}
+          path: eval-artifacts/
+          if-no-files-found: warn
+          retention-days: 30

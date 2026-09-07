@@ -1,0 +1,156 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    # GitHub documents gh-readonly-queue/<base> as the merge queue's temporary
+    # branch prefix. This push filter is a delivery fallback when merge_group
+    # is not emitted; the workflow still runs against the speculative SHA.
+    branches: [main, "gh-readonly-queue/main/**"]
+  merge_group:
+  workflow_dispatch: {}
+
+concurrency:
+  # Only a newer push to the same PR supersedes useful work. Integration,
+  # queue-ref, main, and explicit dispatch runs each get an isolated lane.
+  group: ${{ github.event_name == 'pull_request' && format('ci-pr-{0}-{1}', github.repository, github.event.pull_request.number) || format('ci-run-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # Detect whether a PR can affect the Postgres dialect or browser surface.
+  # Integration SHAs always exercise both. Keep these allowlists conservative
+  # and dependency-free; CI/dependency changes exercise both suites.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      db: ${{ steps.detect.outputs.db }}
+      web: ${{ steps.detect.outputs.web }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: detect
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "db=true" >> "$GITHUB_OUTPUT"
+            echo "web=true" >> "$GITHUB_OUTPUT"
+            echo "non-PR event (${{ github.event_name }}) -> full integration suite runs"
+            exit 0
+          fi
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          files=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          echo "changed files:"; echo "$files"
+          db=false
+          web=false
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              .github/workflows/ci.yml|package.json|pnpm-lock.yaml|vitest.config.ts|vitest.browser.config.ts)
+                db=true; web=true ;;
+              src/db.ts|src/db/*|src/queue.ts|src/mediator/pipelines.ts|src/dashboard.ts)
+                db=true ;;
+              tests/helpers/db.ts|tests/helpers/pglite.ts|tests/db*.test.ts|tests/queue-*.test.ts|tests/dashboard-api.test.ts|tests/mediator-pipelines.test.ts)
+                db=true ;;
+              src/dashboard/public/*|src/dashboard/web/*|tests/dashboard-web-*|tests/browser/*|vite.dashboard.config.ts|tsconfig.dashboard.json|scripts/smoke-dashboard-build.mjs)
+                web=true ;;
+            esac
+          done <<< "$files"
+          echo "db=$db" >> "$GITHUB_OUTPUT"
+          echo "web=$web" >> "$GITHUB_OUTPUT"
+          echo "test-postgres db-relevant: $db"
+          echo "browser-test web-relevant: $web"
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint:dashboard-spacing
+      # The production build includes the server compiler, strict dashboard
+      # compiler, Vite bundle, and served static smoke. One gate, no duplicate
+      # dashboard build in browser-test.
+      - run: pnpm build
+      - run: pnpm test
+      # The CLI is a self-contained package (cli/) with its own workspace;
+      # build + test it in the same gate so the bundle and command tests are covered.
+      - run: pnpm --dir cli install --frozen-lockfile
+      - run: pnpm --dir cli run build
+      - run: pnpm --dir cli test
+
+  # Same suite against the Postgres dialect (PGlite through the PostgresDb
+  # driver). The seam's acceptance bar is green on both backends. Gated on the
+  # `changes` detector: skipped when a PR touches only DB-irrelevant paths.
+  test-postgres:
+    needs: changes
+    if: needs.changes.outputs.db == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile
+      # pnpm test builds the gitignored canonical dashboard before starting
+      # either database-backed suite, so a fresh checkout never depends on an
+      # ignored artifact left by another job or local worktree.
+      - run: pnpm test
+        env:
+          MEMRACER_TEST_DB: postgres
+
+  browser-test:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile
+      # /dashboard is a generated, gitignored Vite bundle. The browser job has
+      # a fresh checkout of its own, so build it deterministically before the
+      # real server serves the canonical React acceptance surface.
+      - run: pnpm build:dashboard
+      - name: Cache Playwright chromium headless shell
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ms-playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm exec playwright install chromium --only-shell
+      - run: pnpm test:browser
+
+  # Aggregate gate: the single required check. A merge queue gates on this
+  # `ci` check. merge_group is the primary trigger; a push to
+  # gh-readonly-queue/main/** is the documented-ref fallback when event
+  # delivery is missing. Either run reports `ci` on the speculative SHA.
+  # `if: always()` so this runs even when gated suites were legitimately
+  # SKIPPED; a skipped required `needs` would otherwise skip `ci` and STALL
+  # the queue.
+  ci:
+    needs: [test, test-postgres, browser-test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Aggregate suite results (gated suites may skip)
+        run: |
+          echo "event=${{ github.event_name }} test=${{ needs.test.result }} test-postgres=${{ needs.test-postgres.result }} browser-test=${{ needs.browser-test.result }}"
+          [ "${{ needs.test.result }}" = "success" ] || { echo "test did not pass"; exit 1; }
+          case "${{ needs.test-postgres.result }}" in
+            success|skipped) ;;
+            *) echo "test-postgres failed"; exit 1 ;;
+          esac
+          case "${{ needs.browser-test.result }}" in
+            success|skipped) ;;
+            *) echo "browser-test failed"; exit 1 ;;
+          esac
+          echo "aggregate ci: green"

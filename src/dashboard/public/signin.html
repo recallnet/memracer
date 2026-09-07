@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08090c">
+  <title>memracer — sign in</title>
+  <link rel="stylesheet" href="/dashboard/styles.css">
+</head>
+<body>
+  <div class="gate">
+    <div class="gate-box">
+      <div class="gate-title">memracer<span class="cursor">&#9646;</span></div>
+      <div class="gate-hint" id="mode-hint">email sign in</div>
+      <form id="signin-form">
+        <label class="sr-label" for="email">email</label>
+        <input id="email" type="email" placeholder="email" autocomplete="email" autofocus required>
+        <button id="submit" type="submit">send sign-in link</button>
+      </form>
+      <div id="sent" class="gate-hint hidden" role="status">check your email for a single-use sign-in link</div>
+      <div id="error" class="gate-error hidden" role="alert"></div>
+    </div>
+  </div>
+  <script>
+  (() => {
+    "use strict";
+    const $ = (id) => document.getElementById(id);
+    const nextParam = new URLSearchParams(location.search).get("next") || "";
+    const dest = /^\/(?!\/)/.test(nextParam) ? nextParam : "/dashboard";
+    const err = (msg) => {
+      const node = $("error");
+      node.textContent = msg;
+      node.classList.toggle("hidden", !msg);
+    };
+    $("signin-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      err("");
+      const button = $("submit");
+      if (button.disabled) return;
+      const email = $("email").value.trim();
+      const callbackURL = new URL(dest, location.origin).toString();
+      button.disabled = true;
+      button.textContent = "sending…";
+      try {
+        // Email only — display name is set once for new users (email local-part)
+        // and edited in Settings. Never send `name` on re-signin.
+        const response = await fetch("/api/auth/sign-in/magic-link", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ email, callbackURL, newUserCallbackURL: callbackURL }),
+        });
+        if (!response.ok) {
+          const body = await response.json().catch(() => ({}));
+          err(body.message || body.error || `could not send sign-in link (${response.status})`);
+          button.disabled = false;
+          button.textContent = "send sign-in link";
+          return;
+        }
+        $("signin-form").classList.add("hidden");
+        $("sent").classList.remove("hidden");
+      } catch {
+        err("network error — try again");
+        button.disabled = false;
+        button.textContent = "send sign-in link";
+      }
+    });
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "serverUrl": "https://memracer.example.com/mcp",
+  "token": "coder-token-from-memracer-admin",
+  "agentName": "cc-7f2",
+  "targetRepo": "/absolute/path/to/your/repo",
+  "claudeCmd": "claude",
+  "claudeArgs": [],
+  "maxTaskMinutes": 45,
+  "goalLeasePollS": 30,
+  "waitTimeoutS": 90,
+  "idlePollS": 600
+}

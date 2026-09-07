@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <title>Claude Code · memracer human</title>
+  <style>
+    :root {
+      --bg: #07080b; --panel: #0e1117; --panel-2: #141922; --border: #212c3a;
+      --text: #b2bbc6; --text-strong: #fff; --muted: #87929e; --live: #12a3ff;
+      --green: #4fd873; --amber: #e0b24a; --red: #f28b82;
+      --sans: "Space Grotesk", system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 900px; height: 900px; width: 1440px; background: var(--bg); color: var(--text);
+      font-family: var(--sans); display: grid; grid-template-columns: 240px 1fr;
+    }
+    aside {
+      border-right: 1px solid var(--border); background: var(--panel);
+      padding: 16px; display: flex; flex-direction: column; gap: 12px;
+    }
+    aside h1 { margin: 0; font-size: 13px; color: var(--text-strong); font-weight: 600; }
+    aside .session {
+      padding: 10px 12px; border-radius: 6px; background: color-mix(in srgb, var(--live) 12%, var(--panel-2));
+      border: 1px solid color-mix(in srgb, var(--live) 35%, var(--border));
+      font-size: 12px; color: var(--text-strong);
+    }
+    aside .session span { display: block; color: var(--muted); font-size: 11px; margin-top: 4px; }
+    main { padding: 24px 32px; max-width: 920px; }
+    .title { font-size: 11px; font-family: var(--mono); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 20px; }
+    .bubble { margin: 0 0 16px; padding: 14px 16px; border-radius: 8px; background: var(--panel); border: 1px solid var(--border); }
+    .bubble.human { border-color: color-mix(in srgb, var(--muted) 50%, var(--border)); }
+    .bubble.assistant { border-color: color-mix(in srgb, var(--live) 30%, var(--border)); }
+    .who { font-size: 11px; font-family: var(--mono); color: var(--muted); margin-bottom: 8px; }
+    .bubble p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-strong); }
+    .tool {
+      margin: 0 0 16px; border-radius: 8px; border: 1px solid color-mix(in srgb, var(--amber) 40%, var(--border));
+      background: color-mix(in srgb, var(--amber) 8%, var(--panel)); overflow: hidden;
+    }
+    .tool header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 14px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12px;
+    }
+    .tool header strong { color: var(--amber); }
+    .tool header em { color: var(--green); font-style: normal; font-size: 11px; }
+    .tool pre {
+      margin: 0; padding: 12px 14px; font-family: var(--mono); font-size: 11px; line-height: 1.45;
+      color: var(--text); white-space: pre-wrap; background: var(--panel-2);
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <h1>Claude Code</h1>
+    <div class="session">
+      memracer · human
+      <span>MCP · memracer.com</span>
+    </div>
+  </aside>
+  <main>
+    <div class="title">Session · human MCP tools</div>
+
+    <div class="bubble human">
+      <div class="who">You</div>
+      <p>What needs my attention on memracer today?</p>
+    </div>
+
+    <div class="tool">
+      <header>
+        <strong>human_status</strong>
+        <em>completed</em>
+      </header>
+      <pre>{
+  "project": "memracer",
+  "attention": [
+    {
+      "kind": "open_question",
+      "task_id": 482,
+      "title": "Repair failed CI",
+      "question": "Should this retry wait for the failing check?",
+      "recovery": "human_answer"
+    }
+  ],
+  "open_questions": 1,
+  "queued": 4
+}</pre>
+    </div>
+
+    <div class="bubble assistant">
+      <div class="who">Claude</div>
+      <p>One needs-you: task #482 is blocked on a retry decision. I will answer so the fleet can continue.</p>
+    </div>
+
+    <div class="tool">
+      <header>
+        <strong>human_answer</strong>
+        <em>completed</em>
+      </header>
+      <pre>{
+  "task_id": 482,
+  "question_id": 91,
+  "answer": "Wait for the failing check, then retry once.",
+  "result": { "state": "QUEUED", "task_id": 482 }
+}</pre>
+    </div>
+
+    <div class="tool">
+      <header>
+        <strong>human_submit</strong>
+        <em>completed</em>
+      </header>
+      <pre>{
+  "title": "Normalize order pipeline",
+  "body": "Outcome: Canonicalize order status across services.",
+  "result": { "task_id": 535, "state": "QUEUED", "priority": 1 }
+}</pre>
+    </div>
+
+    <div class="bubble assistant">
+      <div class="who">Claude</div>
+      <p>Answered #482 (now queued) and submitted #535. Frigg will groom the new intent; you stay at the altitude of direction, not diffs.</p>
+    </div>
+  </main>
+</body>
+</html>

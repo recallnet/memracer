@@ -1,0 +1,9 @@
+node_modules/
+dist/
+src/dashboard/public/next/
+src/dashboard/web-dist/
+.env
+.env.*
+*.log
+.DS_Store
+.codex/

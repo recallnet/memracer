@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <title>Claude Code · memracer coder</title>
+  <style>
+    :root {
+      --bg: #07080b; --panel: #0e1117; --panel-2: #141922; --border: #212c3a;
+      --text: #b2bbc6; --text-strong: #fff; --muted: #87929e; --live: #12a3ff;
+      --green: #4fd873; --amber: #e0b24a;
+      --sans: "Space Grotesk", system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 900px; height: 900px; width: 1440px; background: var(--bg); color: var(--text);
+      font-family: var(--sans); display: grid; grid-template-columns: 240px 1fr;
+    }
+    aside {
+      border-right: 1px solid var(--border); background: var(--panel);
+      padding: 16px; display: flex; flex-direction: column; gap: 12px;
+    }
+    aside h1 { margin: 0; font-size: 13px; color: var(--text-strong); font-weight: 600; }
+    aside .session {
+      padding: 10px 12px; border-radius: 6px; background: color-mix(in srgb, var(--green) 12%, var(--panel-2));
+      border: 1px solid color-mix(in srgb, var(--green) 35%, var(--border));
+      font-size: 12px; color: var(--text-strong);
+    }
+    aside .session span { display: block; color: var(--muted); font-size: 11px; margin-top: 4px; }
+    main { padding: 24px 32px; max-width: 920px; }
+    .title { font-size: 11px; font-family: var(--mono); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 20px; }
+    .bubble { margin: 0 0 16px; padding: 14px 16px; border-radius: 8px; background: var(--panel); border: 1px solid var(--border); }
+    .bubble p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-strong); }
+    .who { font-size: 11px; font-family: var(--mono); color: var(--muted); margin-bottom: 8px; }
+    .tool {
+      margin: 0 0 16px; border-radius: 8px; border: 1px solid color-mix(in srgb, var(--live) 40%, var(--border));
+      background: color-mix(in srgb, var(--live) 8%, var(--panel)); overflow: hidden;
+    }
+    .tool header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 14px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12px;
+    }
+    .tool header strong { color: var(--live); }
+    .tool header em { color: var(--green); font-style: normal; font-size: 11px; }
+    .tool pre {
+      margin: 0; padding: 12px 14px; font-family: var(--mono); font-size: 11px; line-height: 1.45;
+      color: var(--text); white-space: pre-wrap; background: var(--panel-2);
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <h1>Claude Code</h1>
+    <div class="session">
+      memracer · coder
+      <span>MCP · off-model drain loop</span>
+    </div>
+  </aside>
+  <main>
+    <div class="title">Session · coder MCP tools</div>
+
+    <div class="tool">
+      <header>
+        <strong>coder_check_work</strong>
+        <em>completed</em>
+      </header>
+      <pre>{
+  "available_count": 1,
+  "peek": [
+    { "project_id": "memracer", "title": "Unwedge merge queue", "priority": 1 }
+  ]
+}</pre>
+    </div>
+
+    <div class="tool">
+      <header>
+        <strong>coder_claim_task</strong>
+        <em>completed</em>
+      </header>
+      <pre>{
+  "id": 518,
+  "title": "Unwedge merge queue",
+  "state": "CLAIMED",
+  "lease_ttl_ms": 7200000,
+  "plan_deadline": "…+60m"
+}</pre>
+    </div>
+
+    <div class="bubble">
+      <div class="who">Claude</div>
+      <p>Claimed #518. Proposing a bounded recovery plan before writing code.</p>
+    </div>
+
+    <div class="tool">
+      <header>
+        <strong>coder_propose_plan</strong>
+        <em>approved</em>
+      </header>
+      <pre>{
+  "task_id": 518,
+  "verdict": "approved",
+  "plan": "1. Reproduce stale dispatch. 2. Clear stuck entry. 3. Re-arm enrollment. 4. Verify green CI.",
+  "files_touched": ["src/server.ts", "tests/…"]
+}</pre>
+    </div>
+
+    <div class="tool">
+      <header>
+        <strong>coder_progress</strong>
+        <em>completed</em>
+      </header>
+      <pre>{
+  "task_id": 518,
+  "note": "Recovery implemented; tests green; opening draft PR."
+}</pre>
+    </div>
+
+    <div class="tool">
+      <header>
+        <strong>coder_complete</strong>
+        <em>completed</em>
+      </header>
+      <pre>{
+  "task_id": 518,
+  "summary": "Unwedged merge dispatch after stale speculative build.",
+  "pr_url": "https://github.com/recallnet/memracer/pull/343",
+  "state": "AWAITING_MERGE"
+}</pre>
+    </div>
+
+    <div class="bubble">
+      <div class="who">Claude</div>
+      <p>PR #343 is open. Returning to the availability loop for the next claimable task.</p>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!-- memracer protocol — paste into the repo's or your global CLAUDE.md -->
+
+## memracer
+
+This session is connected to a memracer MCP server; the user submits work by
+talking to you. Follow the `memracer-protocol` skill. In short, without the
+user naming any tool:
+
+- **Session start**: call `human_status`; surface tasks by state and any open
+  questions (offer to answer them via `human_answer`). Lead with any
+  `attention_alerts`: they mean queued work has passed its attention grace
+  while no coder has a live lease in that project. Offer the alert's recovery
+  action; do not describe it as a crash or data loss.
+- **User shares an idea, bug, or complaint**: gather evidence from this repo
+  first — file:line references, code snippets, stack traces, `git rev-parse
+  HEAD` — infer `owner/name` from `git remote get-url origin`, then call
+  `human_submit` with title, body with acceptance criteria, repo, base_sha,
+  and the evidence. Report the task id and grooming verdict.

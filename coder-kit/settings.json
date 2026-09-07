@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": ["mcp__memracer__*"]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${MEMRACER_KIT_DIR:-$CLAUDE_PROJECT_DIR/coder-kit}/hooks/stop-heartbeat.sh\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${MEMRACER_KIT_DIR:-$CLAUDE_PROJECT_DIR/coder-kit}/hooks/precompact-brief.sh\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}
