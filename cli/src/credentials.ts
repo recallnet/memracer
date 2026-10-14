@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { closeSync, fchmodSync, mkdirSync, openSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
 
@@ -34,7 +34,14 @@ export class CredentialStore {
 
   save(cred: Credential): void {
     mkdirSync(dirname(this.file), { recursive: true });
-    writeFileSync(this.file, `${JSON.stringify(cred, null, 2)}\n`, { mode: 0o600 });
+    const file = openSync(this.file, "w", 0o600);
+    try {
+      // Creation mode does not tighten an existing file. Restrict before writing.
+      fchmodSync(file, 0o600);
+      writeFileSync(file, `${JSON.stringify(cred, null, 2)}\n`);
+    } finally {
+      closeSync(file);
+    }
   }
 
   clear(): void {

@@ -50,9 +50,20 @@ the contract there; do not duplicate its text elsewhere.
 ## Working in this repo
 
 - Run `pnpm build` and `pnpm test` before you claim a change is done. CLI
-  changes also need `pnpm --dir cli run build` and `pnpm --dir cli test`.
+  changes also need `pnpm --dir cli run typecheck`, `pnpm --dir cli run build`,
+  and `pnpm --dir cli test`.
   Dashboard changes need `pnpm test:browser` (see README for the Playwright
   install step).
 - Tests live next to the surface they cover: `tests/` for the server,
   `cli/tests/` for the CLI, `tests/browser/` for the dashboard.
 - Open one logical change per pull request.
+
+## Security invariants
+
+- Production and Railway authentication must reject a missing or blank
+  `BETTER_AUTH_SECRET`; the public development fallback is local-only.
+- Credential files and Codex configs must be restricted to mode `0600` before
+  writing bearer credentials, including when updating an existing file.
+- Keep the Pi package family aligned at `0.80.6` until its changed auth/session
+  APIs are migrated. Dependency updates need both `pnpm build` and the offline
+  `pnpm eval` gate; compiling types alone does not catch ESM export mismatches.

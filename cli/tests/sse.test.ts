@@ -38,7 +38,7 @@ function streamResponse(chunks: string[], ok = true, status = 200): Response {
 describe("readEventStream", () => {
   it("sends a Bearer token in the header, never the URL, and yields frames split on blank lines", async () => {
     const frames: SseFrame[] = [];
-    const fetchImpl = vi.fn(async () =>
+    const fetchImpl = vi.fn<typeof fetch>(async () =>
       streamResponse([": connected\n\n", "event: changed\ndata: {\"project\":\"p\"}\n\n", ": keepalive\n\n"]),
     );
     await readEventStream("https://memracer.com/api/p/p/events", "seat_tok", (f) => frames.push(f), {
@@ -53,13 +53,13 @@ describe("readEventStream", () => {
 
   it("reassembles a frame split across chunk boundaries", async () => {
     const frames: SseFrame[] = [];
-    const fetchImpl = vi.fn(async () => streamResponse(["event: chan", "ged\ndata: x", "\n\n"]));
+    const fetchImpl = vi.fn<typeof fetch>(async () => streamResponse(["event: chan", "ged\ndata: x", "\n\n"]));
     await readEventStream("u", "t", (f) => frames.push(f), { fetchImpl: fetchImpl as unknown as typeof fetch });
     expect(frames).toEqual([{ event: "changed", data: "x" }]);
   });
 
   it("throws on a non-2xx response so the caller can reconnect", async () => {
-    const fetchImpl = vi.fn(async () => streamResponse([], false, 401));
+    const fetchImpl = vi.fn<typeof fetch>(async () => streamResponse([], false, 401));
     await expect(
       readEventStream("u", "t", () => {}, { fetchImpl: fetchImpl as unknown as typeof fetch }),
     ).rejects.toThrow(/401/);

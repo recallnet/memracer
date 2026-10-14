@@ -1,5 +1,5 @@
 {
   "note": "Prefer the live snippet from the dashboard; shapes stay in mcp-snippet.js",
-  "url": "https://memracer.com/mcp",
+  "url": "https://memracer.example.com/mcp",
   "headers": { "Authorization": "Bearer YOUR_API_KEY" }
 }

@@ -80,6 +80,7 @@ jobs:
       # The CLI is a self-contained package (cli/) with its own workspace;
       # build + test it in the same gate so the bundle and command tests are covered.
       - run: pnpm --dir cli install --frozen-lockfile
+      - run: pnpm --dir cli run typecheck
       - run: pnpm --dir cli run build
       - run: pnpm --dir cli test
 

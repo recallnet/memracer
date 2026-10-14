@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { mkdtemp, readFile, rm, mkdir, writeFile, stat } from "node:fs/promises";
+import { chmod, mkdtemp, readFile, rm, mkdir, writeFile, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parse } from "smol-toml";
@@ -95,6 +95,17 @@ describe("codexWriter", () => {
     const global = await readGlobal();
     expect(global.mcp_servers.memracer_coder_ab12).toBeUndefined();
     expect(global.mcp_servers.some_other).toEqual({ url: "https://example.com/mcp" });
+  });
+
+  it("repairs permissions when updating existing project and global config", async () => {
+    await codexWriter.write(seat);
+    const projectFile = join(seat.folder, ".codex", "config.toml");
+    const globalFile = join(process.env.CODEX_HOME!, "config.toml");
+    await chmod(projectFile, 0o644);
+    await chmod(globalFile, 0o644);
+    await codexWriter.write({ ...seat, token: "replacement-test-token" });
+    expect((await stat(projectFile)).mode & 0o777).toBe(0o600);
+    expect((await stat(globalFile)).mode & 0o777).toBe(0o600);
   });
 
   it("writes the config files 0600 (they carry a live token / trust grant)", async () => {

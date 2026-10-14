@@ -1,11 +1,17 @@
 # memracer
 
-memracer is a shared MCP server that coordinates humans and coding agents on
+memracer is a reference prototype of a shared MCP server coordinating humans and coding agents on
 software work. Humans submit intent and evidence through their own agent
-sessions. Frigg, the hosted orchestrator (called the mediator in code), grooms
+sessions. Frigg, the server-side orchestrator (called the mediator in code), grooms
 each submission into a prioritized queue and reviews coder plans. Coding
 agents claim work and return pull requests. A dashboard shows the queue,
 active agents, decisions, and a causal replay of each task.
+
+This repository preserves an experiment in mediated work queues and durable
+agent coordination. It is not a supported hosted service. The experiment does
+not establish throughput gains or autonomous product judgment; operators must
+review model decisions, agent permissions, and deployment configuration.
+Historical domains and release channels in the source are not service promises.
 
 Your existing MCP client is the primary interface. The `memracer` CLI
 provisions and connects agent seats.
@@ -74,6 +80,7 @@ pnpm lint:dashboard-spacing          # dashboard spacing token lint
 pnpm exec tsc -p tsconfig.json --noEmit   # server typecheck
 pnpm test                            # builds the dashboard, then runs vitest
 MEMRACER_TEST_DB=postgres pnpm test  # same suite over PGlite through the Postgres driver
+pnpm --dir cli run typecheck         # CLI source and test typecheck
 pnpm --dir cli test                  # CLI suite
 ```
 
@@ -94,7 +101,7 @@ mediator driver is `fake`. A local boot with no external services:
 
 ```sh
 pnpm build:dashboard
-MEMRACER_MEDIATOR_DRIVER=fake pnpm dev
+MEMRACER_PUBLIC_URL=http://localhost:8787 MEMRACER_MEDIATOR_DRIVER=fake pnpm dev
 ```
 
 The dashboard is served at `http://localhost:8787/dashboard` and sign-in at
@@ -132,8 +139,12 @@ All settings come from environment variables. The main ones:
 | `MEMRACER_CLI_CHANNEL` | `github-release` (default) or `npm`; selects the CLI install command the server prints |
 | `MEMRACER_MEDIATOR_POLICY_MODE`, `MEMRACER_MEDIATOR_CHEAP_MODEL`, `MEMRACER_MEDIATOR_CLASSIFIER_MODEL`, `MEMRACER_MEDIATOR_CHEAP_QUALIFIED`, `MEMRACER_MEDIATOR_GROOM_CLASSIFIER_ENABLED` | Model routing between the default and a cheaper model per job kind |
 
-`railway.json` holds a build and start definition for hosting on Railway; any
-host that runs `pnpm build` then `node dist/main.js` works.
+`railway.json` preserves the Railway build and start definition. Other hosts
+need their own persistence, HTTPS, callback-origin, secret, backup, and process
+configuration. See [SECURITY.md](SECURITY.md) before exposing an instance.
+A local fake-driver boot does not supply email delivery; signing in requires
+configuring `RESEND_API_KEY` and a sender. Real mediator and GitHub operations
+require their own credentials.
 
 ## Connect over MCP
 
@@ -171,9 +182,10 @@ server's `/install.sh` route advertises.
 
 `src/eval/` holds mediator behavior evals. `pnpm eval` runs them with the
 deterministic fake driver; pass `--driver openrouter` with `OPENROUTER_API_KEY`
-set for real-model runs. `.github/workflows/eval-nightly.yml` runs the
-stochastic tier on a schedule and skips cleanly when the key is absent.
+set for real-model runs. `.github/workflows/eval-nightly.yml` exposes the
+stochastic tier through manual dispatch and skips cleanly when the key is absent.
+Real-provider evals can incur charges.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE) and [third-party asset notices](THIRD_PARTY_NOTICES.md).

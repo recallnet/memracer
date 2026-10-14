@@ -1,14 +1,14 @@
-name: eval-nightly
+name: Mediator eval (manual)
 
-# Tier-B stochastic mediator eval. SCHEDULE ONLY (plus manual dispatch) — never
+# Tier-B stochastic mediator eval. Manual dispatch only — never
 # on pull_request/push, so it never gates the merge queue. It runs the real
 # model over N trials, reports pass^k + a Wilson CI + LLM-judge dimension scores,
 # and uploads them as artifacts. Thresholds soft-gate (report-only) until the
 # judge is calibrated, and the run skips cleanly (exit 0) when the OpenRouter
 # secret is absent, so a fork or a secret-less environment stays green.
+# This reference prototype does not schedule paid provider calls. An operator
+# can explicitly dispatch an experiment with their configured provider secret.
 on:
-  schedule:
-    - cron: "0 7 * * *" # 07:00 UTC nightly
   workflow_dispatch:
     inputs:
       trials:
@@ -35,10 +35,10 @@ jobs:
       - name: Run stochastic eval (Tier B)
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          TRIALS: ${{ github.event.inputs.trials || '5' }}
         run: |
           set -euo pipefail
           mkdir -p eval-artifacts
-          TRIALS="${{ github.event.inputs.trials || '5' }}"
           # Single run (avoid double model cost / a second independent sample).
           # The entry point self-skips (exit 0) with a clear log line when the
           # key is absent, and soft-gates so a threshold breach never fails here.

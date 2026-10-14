@@ -7,3 +7,15 @@ src/dashboard/web-dist/
 *.log
 .DS_Store
 .codex/
+
+# Local service state and generated provider eval output may contain private data.
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+eval-artifacts/
+# Enrollment can write a live MCP bearer credential into this local config.
+.mcp.json
+.memracer/

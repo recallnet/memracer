@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { mkdtempSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdtempSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { CredentialStore } from "../src/credentials.js";
@@ -25,6 +25,15 @@ describe("CredentialStore", () => {
     const store = new CredentialStore(file);
     store.save({ baseUrl: "https://memracer.com", token: "op_secret" });
     expect(store.load()).toEqual({ baseUrl: "https://memracer.com", token: "op_secret" });
+    expect(statSync(file).mode & 0o777).toBe(0o600);
+  });
+
+  it("repairs permissions when replacing an existing credential", () => {
+    const file = tmpFile();
+    const store = new CredentialStore(file);
+    store.save({ baseUrl: "https://example.com", token: "old-test-token" });
+    chmodSync(file, 0o644);
+    store.save({ baseUrl: "https://example.com", token: "new-test-token" });
     expect(statSync(file).mode & 0o777).toBe(0o600);
   });
 

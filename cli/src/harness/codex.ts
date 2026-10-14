@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, open } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { parse, stringify } from "smol-toml";
@@ -11,6 +11,17 @@ type Ensure = (folder: string, line: string) => Promise<void>;
 /** Codex reads `$CODEX_HOME/config.toml`, defaulting to `~/.codex`. */
 function codexHome(): string {
   return process.env.CODEX_HOME ?? join(homedir(), ".codex");
+}
+
+async function writePrivateConfig(path: string, contents: string): Promise<void> {
+  const file = await open(path, "w", 0o600);
+  try {
+    // Existing config files may have been created with broader permissions.
+    await file.chmod(0o600);
+    await file.writeFile(contents);
+  } finally {
+    await file.close();
+  }
 }
 
 /**
@@ -31,7 +42,7 @@ export const codexWriter: HarnessWriter & {
   async write(seat: SeatConfig, _run?: Runner, ensure: Ensure = appendGitignore): Promise<void> {
     const projectDir = join(seat.folder, ".codex");
     await mkdir(projectDir, { recursive: true });
-    await writeFile(
+    await writePrivateConfig(
       join(projectDir, "config.toml"),
       stringify({
         mcp_servers: {
@@ -41,7 +52,6 @@ export const codexWriter: HarnessWriter & {
           },
         },
       }),
-      { mode: 0o600 },
     );
     await ensure(seat.folder, ".codex/");
 
@@ -67,7 +77,7 @@ export const codexWriter: HarnessWriter & {
     }
 
     await mkdir(home, { recursive: true });
-    await writeFile(globalPath, stringify(global), { mode: 0o600 });
+    await writePrivateConfig(globalPath, stringify(global));
   },
   locate(seat: SeatConfig): string {
     return `${join(seat.folder, ".codex", "config.toml")} (token inline, gitignored)`;

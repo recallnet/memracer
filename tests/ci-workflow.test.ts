@@ -98,3 +98,18 @@ describe("CI workflow: cost-smart merge-queue gate", () => {
     expect(source.match(/success\|skipped/g)?.length).toBe(2);
   });
 });
+
+
+describe("manual mediator eval safety", () => {
+  const workflow = readFileSync(path.join(ROOT, ".github", "workflows", "eval-nightly.yml"), "utf8");
+
+  it("keeps paid evals behind explicit manual dispatch", () => {
+    expect(workflow).toMatch(/^  workflow_dispatch:/m);
+    expect(workflow).not.toMatch(/^  (schedule|push|pull_request):/m);
+  });
+
+  it("passes trial input as environment data rather than interpolated shell code", () => {
+    expect(workflow).toMatch(/TRIALS: \$\{\{ github\.event\.inputs\.trials/);
+    expect(workflow).not.toMatch(/TRIALS="\$\{\{/);
+  });
+});

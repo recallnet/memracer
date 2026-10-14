@@ -11,7 +11,7 @@ export interface RedeemedSeat {
   mcpUrl: string;
 }
 
-type DoFetch = typeof fetch;
+export type DoFetch = typeof fetch;
 
 /** Exchange an enrollment token for a role-scoped seat key. */
 export async function redeemEnrollment(

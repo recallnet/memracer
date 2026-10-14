@@ -72,15 +72,20 @@ async function inviteOnlyAllows(db: Db, email: string): Promise<boolean> {
 
 /** Build the options object shared by betterAuth() and getMigrations(). */
 export function buildAuthOptions(db: Db, handle: unknown): BetterAuthOptions {
+  const configuredSecret = process.env.BETTER_AUTH_SECRET;
+  if ((process.env.NODE_ENV === "production" || process.env.RAILWAY_ENVIRONMENT)
+    && !configuredSecret?.trim()) {
+    throw new Error("BETTER_AUTH_SECRET is required for production authentication");
+  }
   const publicUrl = resolvePublicUrl(process.env);
   const githubClientId = process.env.MEMRACER_GITHUB_APP_CLIENT_ID;
   const githubClientSecret = process.env.MEMRACER_GITHUB_APP_CLIENT_SECRET;
   return {
     baseURL: publicUrl,
     trustedOrigins: trustedAuthOrigins(process.env),
-    secret:
-      process.env.BETTER_AUTH_SECRET ||
-      "memracer-dev-better-auth-secret-0123456789-abcdef",
+    secret: configuredSecret?.trim()
+      ? configuredSecret
+      : "memracer-dev-better-auth-secret-0123456789-abcdef",
     socialProviders: githubClientId && githubClientSecret
       ? { github: { clientId: githubClientId, clientSecret: githubClientSecret } }
       : undefined,

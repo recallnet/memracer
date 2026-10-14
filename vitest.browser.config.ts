@@ -13,7 +13,7 @@ export default defineConfig({
     // The canonical React suite is the production acceptance gate.
     include: ["tests/browser/dashboard-react-home.browser.test.ts"],
     fileParallelism: false,
-    poolOptions: { threads: { maxThreads: 2 } },
+    maxWorkers: 2,
     testTimeout: 30000,
     hookTimeout: 30000,
   },
